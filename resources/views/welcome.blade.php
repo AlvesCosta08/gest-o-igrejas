@@ -12,373 +12,620 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        /*
-         * PSICOLOGIA DAS CORES APLICADA:
-         * - Azul escuro (navy): autoridade, confiança, estabilidade — ideal para sistemas institucionais
-         * - Dourado/âmbar suave: espiritualidade, prestígio, calor humano — alinha com contexto religioso
-         * - Branco/cinza claro: clareza, limpeza, respiro visual — reduz carga cognitiva
-         * - Evitado: roxo saturado (excitação/entretenimento), vermelho (alerta), verde (comércio)
-         *
-         * UX PRINCÍPIOS:
-         * - Lei de Hick: poucas opções de ação (1 CTA principal)
-         * - Hierarquia visual clara: título → subtítulo → CTA
-         * - Contraste mínimo 4.5:1 (WCAG AA)
-         * - Espaçamento generoso reduz carga cognitiva
-         * - Motion reduzida e proposital (não decorativa)
-         */
-
         :root {
-            --navy-950: #0a0f1e;
-            --navy-900: #0d1526;
-            --navy-800: #111e35;
-            --navy-700: #172442;
-            --navy-600: #1e3160;
-            --navy-400: #3d5a8a;
-            --navy-300: #5b7aad;
-            --gold-400:  #c9a84c;
-            --gold-300:  #dfc078;
-            --gold-200:  #f0d9a0;
-            --gray-100:  #f4f5f7;
-            --gray-200:  #e8eaed;
-            --gray-400:  #9aa3b2;
-            --gray-600:  #6b7585;
-            --white:     #ffffff;
+            --bg-main: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-light: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --orange-600: #ea580c;
+            --orange-500: #f97316;
+            --orange-400: #fb923c;
+            --orange-300: #fdba74;
+            --orange-200: #fed7aa;
+            --orange-100: #ffedd5;
+            --navy-900: #0f172a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Figtree', sans-serif;
-            background-color: var(--navy-950);
-            color: var(--white);
+            background-color: var(--bg-secondary);
+            color: var(--text-main);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── SKELETON ── */
+        /* ── LOADER ── */
         #loader {
             position: fixed; inset: 0; z-index: 9999;
-            background: var(--navy-950);
+            background: var(--bg-main);
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            gap: 16px;
-            transition: opacity .4s ease;
+            gap: 20px;
+            transition: opacity .5s ease;
         }
         #loader.out { opacity: 0; pointer-events: none; }
-        .loader-ring {
-            width: 48px; height: 48px;
-            border: 3px solid rgba(201,168,76,.15);
-            border-top-color: var(--gold-400);
-            border-radius: 50%;
-            animation: spin .9s linear infinite;
+        .loader-logo {
+            width: 80px;
+            height: 80px;
+            animation: pulse 2s ease-in-out infinite;
         }
-        .loader-text { font-size: 13px; color: var(--gray-400); letter-spacing: .08em; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { 
+            font-size: 16px; 
+            font-weight: 600;
+            color: var(--orange-500); 
+            letter-spacing: .1em;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        @keyframes fadeInOut { 
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
 
         /* ── NAVBAR ── */
         #navbar {
             position: fixed; top: 0; width: 100%; z-index: 100;
             padding: 20px 0;
-            transition: background .3s ease, padding .3s ease, box-shadow .3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all .4s ease;
+            border-bottom: 1px solid transparent;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
         #navbar.scrolled {
-            background: rgba(10,15,30,.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 12px 0;
-            box-shadow: 0 1px 0 rgba(255,255,255,.06);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+            border-bottom: 1px solid var(--border-light);
+            padding: 14px 0;
         }
         .nav-inner {
-            max-width: 1200px; margin: 0 auto;
-            padding: 0 24px;
+            max-width: 1280px; margin: 0 auto;
+            padding: 0 32px;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .logo-mark {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, var(--gold-400), var(--gold-200));
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
+        
+        .nav-logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+            text-decoration: none; 
+            padding: 8px 0;
+            transition: transform .3s ease;
         }
-        .logo-mark svg { width: 20px; height: 20px; color: var(--navy-900); }
-        .logo-text-main {
-            font-size: 16px; font-weight: 700;
-            color: var(--white); letter-spacing: -.01em;
-        }
-        .logo-text-sub {
-            font-size: 10px; font-weight: 500;
-            color: var(--gray-400); letter-spacing: .12em;
-            text-transform: uppercase; margin-top: 1px;
-        }
-        .nav-links { display: flex; align-items: center; gap: 32px; }
-        .nav-links a {
-            font-size: 14px; font-weight: 500;
-            color: var(--gray-400); text-decoration: none;
-            transition: color .2s;
-        }
-        .nav-links a:hover { color: var(--white); }
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 22px;
-            background: var(--gold-400);
-            color: var(--navy-900);
-            font-size: 14px; font-weight: 700;
-            border-radius: 8px; text-decoration: none;
-            transition: background .2s, transform .15s, box-shadow .2s;
-            letter-spacing: .01em;
-        }
-        .btn-primary:hover {
-            background: var(--gold-300);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(201,168,76,.3);
-        }
-        .btn-secondary {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 22px;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,.15);
-            color: var(--gray-200);
-            font-size: 14px; font-weight: 600;
-            border-radius: 8px; text-decoration: none;
-            transition: border-color .2s, color .2s, background .2s;
-        }
-        .btn-secondary:hover {
-            border-color: rgba(255,255,255,.35);
-            background: rgba(255,255,255,.05);
-            color: var(--white);
-        }
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
+        .nav-logo:hover {
+            transform: translateX(4px);
         }
 
-        /* ── HERO ── */
+        .logo-image {
+            height: 52px;
+            width: auto;
+            object-fit: contain;
+            flex-shrink: 0;
+            transition: all .3s ease;
+            filter: drop-shadow(0 2px 8px rgba(249,115,22,0.15));
+        }
+        
+        .nav-logo:hover .logo-image {
+            transform: scale(1.08) rotate(-2deg);
+            filter: drop-shadow(0 4px 12px rgba(249,115,22,0.25));
+        }
+        
+        .logo-text-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .logo-text-main {
+            font-size: 22px; 
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--orange-600), var(--orange-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text-sub {
+            font-size: 11px; 
+            font-weight: 600;
+            color: var(--text-secondary); 
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 40px; }
+        .nav-links a {
+            font-size: 15px; font-weight: 600;
+            color: var(--text-secondary); text-decoration: none;
+            transition: all .3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--orange-400), var(--orange-600));
+            border-radius: 3px;
+            transition: width .3s ease;
+        }
+        .nav-links a:hover { 
+            color: var(--orange-600);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            color: #ffffff;
+            font-size: 15px; font-weight: 700;
+            border-radius: 12px; text-decoration: none;
+            transition: all .3s ease;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+            background: linear-gradient(135deg, var(--orange-600), var(--orange-500));
+        }
+        
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 32px;
+            background: transparent;
+            border: 2px solid var(--border-hover);
+            color: var(--text-main);
+            font-size: 15px; font-weight: 600;
+            border-radius: 12px; text-decoration: none;
+            transition: all .3s ease;
+        }
+        .btn-secondary:hover {
+            border-color: var(--orange-500);
+            color: var(--orange-600);
+            background: var(--orange-50);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .logo-text-main { font-size: 18px; }
+            .logo-text-sub { font-size: 9px; }
+            .logo-image { height: 44px; }
+            .nav-inner { padding: 0 20px; }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text-group { display: none; }
+            .logo-image { height: 40px; }
+        }
+
+        /* ── HERO ─ */
         #home {
             min-height: 100vh;
             display: flex; align-items: center;
-            padding: 120px 24px 80px;
+            padding: 140px 32px 100px;
             position: relative; overflow: hidden;
+            background: linear-gradient(180deg, var(--bg-main) 0%, var(--bg-secondary) 100%);
         }
-        .hero-bg {
-            position: absolute; inset: 0; z-index: 0;
-            background:
-                radial-gradient(ellipse 60% 50% at 70% 50%, rgba(30,49,96,.5) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,.06) 0%, transparent 60%);
+        .hero-glow {
+            position: absolute; top: -20%; right: -10%;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
         }
-        /* Grade sutil de fundo */
-        .hero-grid {
-            position: absolute; inset: 0; z-index: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-            background-size: 64px 64px;
-            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+        .hero-glow-2 {
+            position: absolute; bottom: -20%; left: -10%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
         }
+        
         .hero-inner {
-            max-width: 1200px; margin: 0 auto; width: 100%;
+            max-width: 1280px; margin: 0 auto; width: 100%;
             position: relative; z-index: 1;
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 80px; align-items: center;
+            gap: 100px; align-items: center;
         }
         @media (max-width: 900px) {
-            .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+            .hero-inner { grid-template-columns: 1fr; gap: 60px; text-align: center; }
             .hero-cta { justify-content: center; }
+            .hero-desc { margin-left: auto; margin-right: auto; }
         }
-        .hero-tag {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 14px;
-            border: 1px solid rgba(201,168,76,.3);
-            background: rgba(201,168,76,.07);
-            border-radius: 100px;
-            font-size: 12px; font-weight: 600;
-            color: var(--gold-300); letter-spacing: .06em;
-            text-transform: uppercase; margin-bottom: 24px;
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--orange-100), rgba(249,115,22,0.1));
+            border: 2px solid var(--orange-300);
+            border-radius: 50px;
+            font-size: 13px; font-weight: 700;
+            color: var(--orange-600); letter-spacing: .05em;
+            text-transform: uppercase; margin-bottom: 32px;
+            box-shadow: 0 4px 15px rgba(249,115,22,0.15);
+            animation: float 3s ease-in-out infinite;
         }
-        .hero-tag svg { width: 14px; height: 14px; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .hero-badge svg { 
+            width: 18px; height: 18px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
         h1 {
-            font-size: clamp(36px, 5vw, 60px);
-            font-weight: 800; line-height: 1.1;
-            letter-spacing: -.02em; margin-bottom: 20px;
+            font-size: clamp(42px, 6vw, 68px);
+            font-weight: 900; line-height: 1.05;
+            color: var(--text-main);
+            margin-bottom: 28px;
+            letter-spacing: -1px;
         }
-        h1 span { color: var(--gold-400); display: block; }
+        h1 span { 
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+        
         .hero-desc {
-            font-size: 17px; color: var(--gray-400);
-            line-height: 1.7; margin-bottom: 36px;
-            max-width: 480px;
+            font-size: 19px; color: var(--text-secondary);
+            line-height: 1.8; margin-bottom: 42px;
+            max-width: 580px;
+            font-weight: 400;
         }
-        .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+        .hero-cta { display: flex; gap: 18px; flex-wrap: wrap; }
+        
+        .hero-stats {
+            display: flex; gap: 40px; margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-light);
+        }
+        .hero-stat-item {
+            display: flex; flex-direction: column;
+        }
+        .hero-stat-number {
+            font-size: 36px; font-weight: 900;
+            color: var(--orange-600);
+            line-height: 1;
+        }
+        .hero-stat-label {
+            font-size: 14px; color: var(--text-light);
+            margin-top: 6px; font-weight: 500;
+        }
 
-        /* Painel de preview direito */
         .hero-panel {
-            background: var(--navy-800);
-            border: 1px solid rgba(255,255,255,.07);
-            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
             overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.02);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: transform .5s ease;
+        }
+        .hero-panel:hover {
+            transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
         }
         .panel-header {
-            padding: 14px 20px;
-            border-bottom: 1px solid rgba(255,255,255,.06);
-            display: flex; align-items: center; gap: 8px;
+            padding: 20px 28px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex; align-items: center; gap: 12px;
+            background: linear-gradient(180deg, var(--bg-secondary), var(--bg-card));
         }
-        .panel-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-        }
-        .panel-title {
-            font-size: 13px; color: var(--gray-600);
-            margin-left: 4px; font-weight: 500;
-        }
-        .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .panel-dots { display: flex; gap: 8px; }
+        .panel-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .panel-title { font-size: 14px; color: var(--text-secondary); font-weight: 700; margin-left: 6px; }
+        
+        .panel-body { padding: 28px; display: flex; flex-direction: column; gap: 16px; }
         .panel-row {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--navy-900);
-            border: 1px solid rgba(255,255,255,.05);
-            border-radius: 8px;
-            transition: border-color .2s;
+            padding: 18px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            transition: all .3s ease;
         }
-        .panel-row:hover { border-color: rgba(201,168,76,.2); }
-        .panel-row-left { display: flex; align-items: center; gap: 12px; }
+        .panel-row:hover { 
+            border-color: var(--orange-300);
+            background: #fff;
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px rgba(249,115,22,0.1);
+        }
+        .panel-row-left { display: flex; align-items: center; gap: 18px; }
         .panel-icon {
-            width: 34px; height: 34px; border-radius: 8px;
+            width: 48px; height: 48px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
+            background: #fff; border: 2px solid var(--border-light);
+            transition: all .3s ease;
         }
-        .panel-icon svg { width: 16px; height: 16px; }
-        .panel-label { font-size: 13px; font-weight: 600; color: var(--gray-200); }
-        .panel-sub { font-size: 11px; color: var(--gray-600); margin-top: 1px; }
+        .panel-row:hover .panel-icon {
+            border-color: var(--orange-400);
+            background: var(--orange-50);
+            transform: scale(1.1);
+        }
+        .panel-icon svg { width: 24px; height: 24px; }
+        .panel-label { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .panel-sub { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+        
         .panel-badge {
-            font-size: 11px; font-weight: 700;
-            padding: 3px 10px; border-radius: 100px;
+            font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 50px;
         }
+        
         .panel-footer {
-            padding: 14px 20px;
-            border-top: 1px solid rgba(255,255,255,.06);
-            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px 28px;
+            border-top: 1px solid var(--border-light);
+            display: flex; justify-content: space-around;
+            background: linear-gradient(180deg, var(--bg-card), var(--bg-secondary));
         }
         .panel-stat { text-align: center; }
-        .panel-stat-num { font-size: 20px; font-weight: 800; color: var(--gold-400); }
-        .panel-stat-lbl { font-size: 11px; color: var(--gray-600); margin-top: 2px; font-weight: 500; }
-        .panel-divider { width: 1px; height: 32px; background: rgba(255,255,255,.06); }
+        .panel-stat-num { font-size: 28px; font-weight: 900; color: var(--orange-600); }
+        .panel-stat-lbl { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; font-weight: 600; }
+        .panel-divider { width: 1px; height: 40px; background: var(--border-light); }
 
         /* ── SEÇÃO SOBRE ── */
         #sobre {
-            padding: 100px 24px;
-            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 120px 32px;
+            background: var(--bg-main);
+            border-top: 1px solid var(--border-light);
+            position: relative;
         }
-        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-logo-decoration {
+            position: absolute;
+            top: 50%;
+            right: 8%;
+            transform: translateY(-50%);
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .section-logo-decoration img {
+            height: 350px;
+            width: auto;
+        }
+        
+        .section-inner { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
         .section-tag {
-            font-size: 11px; font-weight: 700; letter-spacing: .12em;
-            text-transform: uppercase; color: var(--gold-400);
-            margin-bottom: 12px;
+            font-size: 14px; font-weight: 800; letter-spacing: .15em;
+            text-transform: uppercase; color: var(--orange-600);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .section-tag .mini-logo {
+            height: 32px;
+            width: auto;
+            opacity: 0.7;
         }
         h2 {
-            font-size: clamp(28px, 3.5vw, 42px);
-            font-weight: 800; letter-spacing: -.02em;
-            line-height: 1.15; margin-bottom: 16px;
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 900; color: var(--text-main);
+            line-height: 1.1; margin-bottom: 24px;
+            letter-spacing: -0.5px;
         }
-        .section-desc { font-size: 16px; color: var(--gray-400); max-width: 520px; line-height: 1.7; }
+        .section-desc { font-size: 18px; color: var(--text-secondary); max-width: 620px; line-height: 1.8; }
+        
         .sobre-grid {
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 64px; align-items: center; margin-top: 56px;
+            gap: 100px; align-items: center; margin-top: 80px;
         }
-        @media (max-width: 800px) { .sobre-grid { grid-template-columns: 1fr; gap: 40px; } }
-        .sobre-text p { font-size: 15px; color: var(--gray-400); line-height: 1.8; margin-bottom: 16px; }
-        .check-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+        @media (max-width: 800px) { .sobre-grid { grid-template-columns: 1fr; gap: 60px; } }
+        
+        .sobre-text p { font-size: 16px; color: var(--text-secondary); line-height: 1.9; margin-bottom: 22px; }
+        
+        .check-list { list-style: none; display: flex; flex-direction: column; gap: 18px; margin-top: 36px; }
         .check-list li {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 14px; color: var(--gray-200); font-weight: 500;
+            display: flex; align-items: center; gap: 16px;
+            font-size: 16px; color: var(--text-main); font-weight: 600;
         }
         .check-icon {
-            width: 20px; height: 20px; border-radius: 50%;
-            background: rgba(201,168,76,.12);
-            border: 1px solid rgba(201,168,76,.25);
+            width: 32px; height: 32px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--orange-400), var(--orange-600));
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(249,115,22,0.3);
             flex-shrink: 0;
         }
-        .check-icon svg { width: 10px; height: 10px; color: var(--gold-400); }
+        .check-icon svg { width: 18px; height: 18px; color: #fff; }
+        
         .quote-card {
-            background: var(--navy-800);
-            border: 1px solid rgba(255,255,255,.07);
-            border-left: 3px solid var(--gold-400);
-            border-radius: 12px; padding: 32px;
+            background: linear-gradient(135deg, var(--bg-secondary), #fff);
+            border: 2px solid var(--border-light);
+            border-left: 6px solid var(--orange-500);
+            border-radius: 20px; padding: 40px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
         }
-        .quote-mark { font-size: 48px; line-height: 1; color: var(--gold-400); opacity: .4; font-family: Georgia, serif; }
-        .quote-text { font-size: 16px; color: var(--gray-200); line-height: 1.7; margin: 12px 0 24px; font-style: italic; }
-        .quote-author { display: flex; align-items: center; gap: 12px; }
+        .quote-mark { font-size: 80px; line-height: 1; color: var(--orange-300); opacity: 0.5; font-family: Georgia, serif; position: absolute; top: 20px; left: 30px; }
+        .quote-text { font-size: 18px; color: var(--text-main); line-height: 1.8; margin: 20px 0 30px; font-weight: 500; font-style: italic; position: relative; z-index: 1; }
+        .quote-author { display: flex; align-items: center; gap: 18px; }
         .quote-avatar {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--navy-600), var(--navy-400));
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
             display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(249,115,22,0.3);
         }
-        .quote-avatar svg { width: 18px; height: 18px; color: var(--gold-300); }
-        .quote-name { font-size: 13px; font-weight: 700; color: var(--white); }
-        .quote-role { font-size: 12px; color: var(--gray-600); margin-top: 1px; }
+        .quote-avatar svg { width: 28px; height: 28px; color: #fff; }
+        .quote-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
+        .quote-role { font-size: 14px; color: var(--text-light); margin-top: 2px; }
 
         /* ── RECURSOS ── */
         #recursos {
-            padding: 100px 24px;
-            background: var(--navy-900);
-            border-top: 1px solid rgba(255,255,255,.05);
-            border-bottom: 1px solid rgba(255,255,255,.05);
+            padding: 120px 32px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+            position: relative;
         }
+        .resources-bg-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .resources-bg-logo img {
+            height: 450px;
+            width: auto;
+        }
+        
         .resources-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 20px; margin-top: 56px;
+            gap: 32px; margin-top: 64px;
+            position: relative;
+            z-index: 1;
         }
         @media (max-width: 900px) { .resources-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 600px) { .resources-grid { grid-template-columns: 1fr; } }
+        
         .resource-card {
-            background: var(--navy-800);
-            border: 1px solid rgba(255,255,255,.06);
-            border-radius: 12px; padding: 28px;
-            transition: border-color .25s, transform .25s;
+            background: var(--bg-card);
+            border: 2px solid var(--border-light);
+            border-radius: 20px; padding: 40px 32px;
+            transition: all .4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .resource-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 0;
+            background: linear-gradient(180deg, var(--orange-400), var(--orange-600)); transition: height .4s ease;
         }
         .resource-card:hover {
-            border-color: rgba(201,168,76,.2);
-            transform: translateY(-3px);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+            border-color: var(--orange-300);
         }
+        .resource-card:hover::before { height: 100%; }
+        
         .resource-icon {
-            width: 44px; height: 44px; border-radius: 10px;
-            background: rgba(201,168,76,.1);
-            border: 1px solid rgba(201,168,76,.2);
+            width: 64px; height: 64px; border-radius: 16px;
+            background: linear-gradient(135deg, var(--orange-100), rgba(249,115,22,0.15));
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 18px;
+            margin-bottom: 26px;
+            border: 2px solid var(--orange-200);
+            box-shadow: 0 4px 15px rgba(249,115,22,0.15);
         }
-        .resource-icon svg { width: 20px; height: 20px; color: var(--gold-400); }
-        .resource-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
-        .resource-desc { font-size: 13px; color: var(--gray-600); line-height: 1.7; }
+        .resource-icon svg { width: 32px; height: 32px; color: var(--orange-600); }
+        .resource-title { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 14px; }
+        .resource-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.7; }
 
         /* ── CTA FINAL ── */
-        #cta { padding: 100px 24px; }
+        #cta { padding: 120px 32px; background: var(--bg-main); position: relative; }
+        .cta-logo-top {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        .cta-logo-top img {
+            height: 80px;
+            width: auto;
+        }
+        
         .cta-box {
-            max-width: 680px; margin: 0 auto; text-align: center;
+            max-width: 750px; margin: 0 auto; text-align: center;
+            padding: 80px 50px;
+            background: linear-gradient(135deg, var(--text-main) 0%, #1e293b 100%);
+            border-radius: 32px;
+            color: #fff;
+            position: relative; overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
         }
-        .cta-box h2 { margin-bottom: 16px; }
-        .cta-box p { font-size: 16px; color: var(--gray-400); margin-bottom: 8px; }
-        .cta-box p.small { font-size: 13px; color: var(--gray-600); margin-bottom: 36px; }
-        .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-        .cta-lock {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 12px; color: var(--gray-600);
-            margin-top: 20px;
+        .cta-box::after {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 300px; height: 300px; background: var(--orange-500);
+            filter: blur(100px); opacity: 0.3; border-radius: 50%;
         }
-        .cta-lock svg { width: 13px; height: 13px; }
+        .cta-box::before {
+            content: ''; position: absolute; bottom: -50px; left: -50px;
+            width: 250px; height: 250px; background: var(--orange-600);
+            filter: blur(80px); opacity: 0.25; border-radius: 50%;
+        }
+        .cta-box h2 { color: #fff; margin-bottom: 20px; font-size: 42px; }
+        .cta-box p { color: rgba(255,255,255,0.8); margin-bottom: 10px; font-size: 17px; }
+        .cta-box p.small { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 42px; }
+        .cta-actions { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 2; }
+        
+        .cta-box .btn-primary { background: var(--orange-500); color: #fff; font-size: 16px; padding: 16px 40px; }
+        .cta-box .btn-primary:hover { background: #fff; color: var(--orange-600); }
+        
+        .cta-box .btn-secondary { border-color: rgba(255,255,255,0.3); color: #fff; font-size: 16px; padding: 16px 40px; }
+        .cta-box .btn-secondary:hover { border-color: #fff; background: rgba(255,255,255,0.15); }
 
         /* ── FOOTER ── */
         footer {
-            padding: 32px 24px;
-            border-top: 1px solid rgba(255,255,255,.05);
+            padding: 60px 32px 40px;
+            background: var(--bg-main);
+            border-top: 2px solid var(--border-light);
             text-align: center;
+            position: relative;
         }
-        footer p { font-size: 13px; color: var(--gray-600); }
-        footer p + p { margin-top: 4px; font-size: 12px; }
+        .footer-logo {
+            margin-bottom: 30px;
+        }
+        .footer-logo img {
+            height: 60px;
+            width: auto;
+            opacity: 0.9;
+            transition: all .3s ease;
+            filter: drop-shadow(0 2px 8px rgba(249,115,22,0.2));
+        }
+        .footer-logo img:hover {
+            opacity: 1;
+            transform: scale(1.05);
+            filter: drop-shadow(0 4px 12px rgba(249,115,22,0.3));
+        }
+        footer p { font-size: 14px; color: var(--text-light); }
+        footer p strong { color: var(--text-secondary); }
+        .footer-divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange-300), var(--orange-600));
+            margin: 28px auto;
+            border-radius: 4px;
+        }
+        .footer-links {
+            display: flex; justify-content: center; gap: 32px; margin-top: 24px;
+        }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color .3s ease;
+        }
+        .footer-links a:hover {
+            color: var(--orange-600);
+        }
 
-        /* ── ANIMAÇÕES DE ENTRADA ── */
+        /* ── ANIMAÇÕES ── */
         .reveal {
-            opacity: 0; transform: translateY(20px);
-            transition: opacity .6s ease, transform .6s ease;
+            opacity: 0; transform: translateY(30px);
+            transition: opacity .8s ease, transform .8s ease;
         }
         .reveal.visible { opacity: 1; transform: translateY(0); }
         .reveal-delay-1 { transition-delay: .1s; }
@@ -392,21 +639,19 @@
 
     <!-- Loader -->
     <div id="loader">
-        <div class="loader-ring"></div>
-        <p class="loader-text">ADTC2 System</p>
+        <img src="{{ asset('images/logo.png') }}" alt="ADTC2" class="loader-logo">
+        <p class="loader-text">Carregando sistema...</p>
     </div>
 
     <!-- Navbar -->
     <nav id="navbar">
         <div class="nav-inner">
             <a href="#home" class="nav-logo">
-                <div class="logo-mark">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
-                <div>
+                <img src="{{ asset('images/logo.png') }}" 
+                     alt="ADTC2 System - Templo Central II" 
+                     class="logo-image">
+                
+                <div class="logo-text-group">
                     <div class="logo-text-main">ADTC2 System</div>
                     <div class="logo-text-sub">Templo Central II</div>
                 </div>
@@ -420,7 +665,7 @@
 
             @auth
                 <a href="{{ url('/dashboard') }}" class="btn-primary">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
                     Dashboard
@@ -428,7 +673,7 @@
             @else
                 <a href="{{ route('login') }}" class="btn-primary">
                     Entrar
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
@@ -438,15 +683,14 @@
 
     <!-- Hero -->
     <section id="home">
-        <div class="hero-bg"></div>
-        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-glow-2"></div>
+        
         <div class="hero-inner">
-            <!-- Esquerda -->
             <div>
-                <div class="hero-tag reveal">
+                <div class="hero-badge reveal">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
                     Gestão Eclesiástica Segura
                 </div>
@@ -465,36 +709,52 @@
                     @auth
                         <a href="{{ url('/dashboard') }}" class="btn-primary">
                             Ir para o Dashboard
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
                         </a>
                     @else
                         <a href="{{ route('login') }}" class="btn-primary">
                             Acessar o Sistema
-                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
                         </a>
                         <a href="#sobre" class="btn-secondary">Saiba mais</a>
                     @endauth
                 </div>
+                
+                <div class="hero-stats reveal reveal-delay-4">
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">248</div>
+                        <div class="hero-stat-label">Membros Ativos</div>
+                    </div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">5</div>
+                        <div class="hero-stat-label">Congregações</div>
+                    </div>
+                    <div class="hero-stat-item">
+                        <div class="hero-stat-number">97%</div>
+                        <div class="hero-stat-label">Satisfação</div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Direita: painel preview -->
             <div class="reveal reveal-delay-2">
                 <div class="hero-panel">
                     <div class="panel-header">
-                        <div class="panel-dot" style="background:#ff5f57"></div>
-                        <div class="panel-dot" style="background:#febc2e"></div>
-                        <div class="panel-dot" style="background:#28c840"></div>
-                        <span class="panel-title">Painel de Membros</span>
+                        <div class="panel-dots">
+                            <div class="panel-dot" style="background:#ef4444"></div>
+                            <div class="panel-dot" style="background:#f59e0b"></div>
+                            <div class="panel-dot" style="background:#10b981"></div>
+                        </div>
+                        <span class="panel-title">Painel Administrativo</span>
                     </div>
                     <div class="panel-body">
                         <div class="panel-row">
                             <div class="panel-row-left">
-                                <div class="panel-icon" style="background:rgba(59,130,246,.1)">
-                                    <svg fill="none" stroke="#60a5fa" viewBox="0 0 24 24">
+                                <div class="panel-icon">
+                                    <svg fill="none" stroke="#f97316" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                 </div>
@@ -503,12 +763,12 @@
                                     <div class="panel-sub">Presbítero · Congregação Central</div>
                                 </div>
                             </div>
-                            <span class="panel-badge" style="background:rgba(34,197,94,.1);color:#4ade80">Ativo</span>
+                            <span class="panel-badge" style="background:#ecfdf5;color:#059669">Ativo</span>
                         </div>
                         <div class="panel-row">
                             <div class="panel-row-left">
-                                <div class="panel-icon" style="background:rgba(168,85,247,.1)">
-                                    <svg fill="none" stroke="#c084fc" viewBox="0 0 24 24">
+                                <div class="panel-icon">
+                                    <svg fill="none" stroke="#f97316" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                 </div>
@@ -517,12 +777,12 @@
                                     <div class="panel-sub">Diácona · Congregação Norte</div>
                                 </div>
                             </div>
-                            <span class="panel-badge" style="background:rgba(34,197,94,.1);color:#4ade80">Ativo</span>
+                            <span class="panel-badge" style="background:#ecfdf5;color:#059669">Ativo</span>
                         </div>
                         <div class="panel-row">
                             <div class="panel-row-left">
-                                <div class="panel-icon" style="background:rgba(201,168,76,.1)">
-                                    <svg fill="none" stroke="#c9a84c" viewBox="0 0 24 24">
+                                <div class="panel-icon">
+                                    <svg fill="none" stroke="#94a3b8" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                 </div>
@@ -531,7 +791,7 @@
                                     <div class="panel-sub">Membro · Congregação Sul</div>
                                 </div>
                             </div>
-                            <span class="panel-badge" style="background:rgba(234,179,8,.1);color:#facc15">Transferido</span>
+                            <span class="panel-badge" style="background:#fff7ed;color:#ea580c">Transferido</span>
                         </div>
                     </div>
                     <div class="panel-footer">
@@ -557,9 +817,16 @@
 
     <!-- Sobre -->
     <section id="sobre">
+        <div class="section-logo-decoration">
+            <img src="{{ asset('images/logo.png') }}" alt="ADTC2">
+        </div>
+        
         <div class="section-inner">
             <div class="reveal">
-                <div class="section-tag">Sobre o sistema</div>
+                <div class="section-tag">
+                    <img src="{{ asset('images/logo.png') }}" alt="" class="mini-logo">
+                    Sobre o sistema
+                </div>
                 <h2>Feito para a realidade<br>da sua igreja</h2>
                 <p class="section-desc">
                     Um sistema simples, seguro e direto ao ponto — desenvolvido especificamente
@@ -585,7 +852,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            Acesso restrito — apenas usuários autorizados
+                            Acesso restrito e seguro
                         </li>
                         <li>
                             <div class="check-icon">
@@ -593,7 +860,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            Dados separados por congregação
+                            Dados organizados por congregação
                         </li>
                         <li>
                             <div class="check-icon">
@@ -601,7 +868,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            Funciona em qualquer dispositivo
+                            Interface limpa e intuitiva
                         </li>
                         <li>
                             <div class="check-icon">
@@ -609,7 +876,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                 </svg>
                             </div>
-                            Documentos e cartas armazenados com segurança
+                            Suporte técnico dedicado
                         </li>
                     </ul>
                 </div>
@@ -628,8 +895,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <div class="quote-name">Pastor Presidente</div>
-                                <div class="quote-role">Assembleia de Deus — Templo Central II</div>
+                                <div class="quote-name">Secretário Geral</div>
+                                <div class="quote-role">AD Templo Central II</div>
                             </div>
                         </div>
                     </div>
@@ -640,9 +907,16 @@
 
     <!-- Recursos -->
     <section id="recursos">
+        <div class="resources-bg-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="ADTC2">
+        </div>
+        
         <div class="section-inner">
             <div class="reveal">
-                <div class="section-tag">Funcionalidades</div>
+                <div class="section-tag">
+                    <img src="{{ asset('images/logo.png') }}" alt="" class="mini-logo">
+                    Funcionalidades
+                </div>
                 <h2>Tudo que a secretaria<br>precisa, em um lugar</h2>
             </div>
 
@@ -650,22 +924,22 @@
                 @foreach([
                     ['path' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
                      'title' => 'Cadastro de Filiados',
-                     'desc'  => 'Ficha completa com dados pessoais, endereço, documentos, datas e função na igreja.'],
+                     'desc'  => 'Ficha completa com dados pessoais, endereço e documentos.'],
                     ['path' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
                      'title' => 'Gestão de Congregações',
-                     'desc'  => 'Cadastre e gerencie todas as congregações com seus respectivos membros e usuários.'],
+                     'desc'  => 'Cadastre e gerencie todas as congregações separadamente.'],
                     ['path' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
                      'title' => 'Controle de Acesso',
-                     'desc'  => 'Dois níveis: administrador vê tudo, usuário comum vê apenas sua congregação.'],
+                     'desc'  => 'Administração centralizada com permissões por usuário.'],
                     ['path' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-                     'title' => 'Dashboard com Estatísticas',
-                     'desc'  => 'Visão geral dos membros ativos, inativos e transferidos com gráficos por congregação.'],
+                     'title' => 'Relatórios Visuais',
+                     'desc'  => 'Gráficos automáticos de crescimento e estatísticas.'],
                     ['path' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
                      'title' => 'Documentos Digitais',
-                     'desc'  => 'Armazene fotos, documentos de identificação e cartas de forma segura na nuvem.'],
+                     'desc'  => 'Armazene cartas e fichas de forma segura e acessível.'],
                     ['path' => 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',
-                     'title' => 'Acesso de Qualquer Lugar',
-                     'desc'  => 'Funciona no computador, tablet e celular. Sem instalar nada, direto pelo navegador.'],
+                     'title' => 'Acesso Mobile',
+                     'desc'  => 'Funciona perfeitamente no celular, tablet e computador.'],
                 ] as $i => $r)
                 <div class="resource-card reveal" style="transition-delay: {{ $i * 0.08 }}s">
                     <div class="resource-icon">
@@ -683,55 +957,61 @@
 
     <!-- CTA Final -->
     <section id="cta">
+        <div class="cta-logo-top">
+            <img src="{{ asset('images/logo.png') }}" alt="ADTC2">
+        </div>
+        
         <div class="cta-box reveal">
-            <div class="section-tag" style="text-align:center">Acesso ao sistema</div>
-            <h2>Sistema de uso<br>exclusivo da AD TC II</h2>
-            <p>Para acessar, utilize as credenciais fornecidas pelo administrador.</p>
-            <p class="small">Não possui acesso? Entre em contato com o secretário da sua congregação.</p>
+            <div class="section-tag" style="color: var(--orange-300); text-align:center; justify-content:center; margin-bottom:24px;">
+                <img src="{{ asset('images/logo.png') }}" alt="" class="mini-logo" style="filter: brightness(0) invert(1); opacity: 0.7; height:28px;">
+                Acesso Restrito
+            </div>
+            <h2>Sistema exclusivo da<br>AD Templo Central II</h2>
+            <p>Utilize suas credenciais fornecidas pela secretaria para acessar.</p>
+            <p class="small">Dúvidas? Entre em contato com o líder da sua congregação.</p>
 
             <div class="cta-actions">
                 <a href="{{ route('login') }}" class="btn-primary">
                     Acessar o Sistema
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
                 </a>
                 <a href="#recursos" class="btn-secondary">Ver recursos</a>
-            </div>
-
-            <div class="cta-lock">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                </svg>
-                Registro fechado — novos usuários são criados pelo administrador
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>© {{ date('Y') }} ADTC2 System. Todos os direitos reservados.</p>
-        <p>Assembleia de Deus — Templo Central II · Maranguape/CE</p>
+        <div class="footer-logo">
+            <img src="{{ asset('images/logo.png') }}" alt="ADTC2 System - Templo Central II">
+        </div>
+        <div class="footer-divider"></div>
+        <p>© {{ date('Y') }} <strong>ADTC2 System</strong>. Todos os direitos reservados.</p>
+        <p style="margin-top:12px; font-size:13px;">Desenvolvido para Assembleia de Deus — Templo Central II · Maranguape/CE</p>
+        <div class="footer-links">
+            <a href="#home">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#recursos">Recursos</a>
+            <a href="{{ route('login') }}">Login</a>
+        </div>
     </footer>
 
     <script>
-        // Loader
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const l = document.getElementById('loader');
                 l.classList.add('out');
-                setTimeout(() => l.remove(), 400);
-            }, 600);
+                setTimeout(() => l.remove(), 500);
+            }, 1200);
         });
 
-        // Navbar scroll
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            navbar.classList.toggle('scrolled', window.scrollY > 40);
+            navbar.classList.toggle('scrolled', window.scrollY > 30);
         });
 
-        // Reveal on scroll
         const reveals = document.querySelectorAll('.reveal');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => {
@@ -740,10 +1020,9 @@
                     observer.unobserve(e.target);
                 }
             });
-        }, { threshold: 0.12 });
+        }, { threshold: 0.1 });
         reveals.forEach(el => observer.observe(el));
-
-        // Smooth scroll
+        
         document.querySelectorAll('a[href^="#"]').forEach(a => {
             a.addEventListener('click', e => {
                 e.preventDefault();
